@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.ObjectId;
 console.log("connected");
-// mongoose.connect("mongodb+srv://harshpunyani24:01YdDV4YBus3C5rY@punyani-cluster.rijr3jq.mongodb.net/coursera-app");
+
 
 
 const userSchema = new Schema ( {
