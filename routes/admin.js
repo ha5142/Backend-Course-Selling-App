@@ -3,18 +3,60 @@ const adminRouter = Router();
 const {adminModel}  = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const JWT_ADMIN_PASSWORD = "a5sasery54";
 
 adminRouter.post('/signup', async function(req, res) {
-    const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+
+    const hashAdminPassword = await bcrypt.hash(password, 5);
+
+
+    await adminModel.create({
+        email: email,
+        password: hashAdminPassword,
+        firstName: firstName,
+        lastName: lastName,
+        
+        
+    })
+    res.json({
+        msg : "signup succeedd",
+    })
 
 
 })
-adminRouter.post('/signin', function(req, res) {
+adminRouter.post('/signin', async function(req, res) {
      const email = req.body.email;
     const password = req.body.password;
+
+    const validAdmin = await adminModel.findOne({
+        email: email,
+    })
+    if(!validAdmin) {
+        res.json({
+            msg: "admin not found",
+        })
+        return
+    }
+    const adminMatch = await bcrypt.compare(password, validAdmin.password);
+
+    if(adminMatch) {
+        const token = jwt.sign({
+            id: validAdmin._id,
+
+        }, JWT_ADMIN_PASSWORD);
+        res.json({
+            token: token
+        })
+    }
+    else {
+        res.status.json({
+            msg: "inavid details"
+        })
+    }
     res.json({
         msg : "admin signin enpoint"
     })
