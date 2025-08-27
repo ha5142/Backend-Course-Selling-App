@@ -1,11 +1,15 @@
 const {Router} = require('express');
 const adminRouter = Router();
 const {adminModel}  = require("../db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-adminRouter.post('/signup', function(req, res) {
+
+adminRouter.post('/signup', async function(req, res) {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+
 
 })
 adminRouter.post('/signin', function(req, res) {
