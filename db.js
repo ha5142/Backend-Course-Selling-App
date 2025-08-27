@@ -6,7 +6,6 @@ console.log("connected");
 
 
 const userSchema = new Schema ( {
-    name: String,
     email: {type: String, unique: true},
     password: String,
     firstName: String,
