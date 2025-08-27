@@ -90,7 +90,7 @@ adminRouter.put('/course', adminMiddleware, async function(req, res) {
     const {title, description, price, imageUrl, courseId} = req.body;
 
     const course = await courseModel.updateOne({
-        id: courseId,
+        _id: courseId,   // object id
         creatorId: adminId,
 
 
