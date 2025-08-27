@@ -3,7 +3,9 @@ const adminRouter = Router();
 const {adminModel}  = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const JWT_ADMIN_PASSWORD = "a5sasery54";
+const {JWT_ADMIN_PASSWORD} = require("../config");
+const {adminMiddleware} = require("../middleware/admin");
+const {courseMNodel} = require("../db")
 
 adminRouter.post('/signup', async function(req, res) {
     const email = req.body.email;
@@ -28,6 +30,7 @@ adminRouter.post('/signup', async function(req, res) {
 
 
 })
+
 adminRouter.post('/signin', async function(req, res) {
      const email = req.body.email;
     const password = req.body.password;
@@ -62,9 +65,23 @@ adminRouter.post('/signin', async function(req, res) {
     })
 
 })
-adminRouter.post('/create', function(req, res) {
+
+adminRouter.post('/course', adminMiddleware, async function(req, res) {
+    const adminId = req.adminId
+   const {title, description, price, imageUrl} = req.body;
+
+  const course =  await courseMNodel.create({
+      title: title,
+      description: description,
+      price: price,
+      imageUrl: imageUrl,
+      creatorId: adminId
+   })
+
+    
     res.json({
         msg : "course create endpoint"
+        courseId = course._id,
     })
 
 adminRouter.put('/change', function(req, res) {
@@ -82,4 +99,5 @@ adminRouter.get('/courses', function(req, res) {
 
 module.exports = {
     adminRouter: adminRouter,
+    JWT_ADMIN_PASSWORD: JWT_ADMIN_PASSWORD,
 }
