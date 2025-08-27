@@ -5,7 +5,8 @@ const {JWT_USER_PASSWORD} = require("../config");
 const bcrypt = require("bcrypt");
 const app = express();
 const userRouter  = Router();
-const {userModel} =  require("../db")
+const {userModel} =  require("../db");
+const { userMiddleware } = require("../middleware/user");
 app.use(express.json());
 
 userRouter.post('/signup', async function(req, res) {
@@ -28,6 +29,7 @@ userRouter.post('/signup', async function(req, res) {
 
 
 })
+
 userRouter.post('/signin', async function(req, res) {
      const email = req.body.email;
     const password = req.body.password;
@@ -59,8 +61,16 @@ userRouter.post('/signin', async function(req, res) {
 
 
 })
-userRouter.post('/purchases', function(req, res) {
+
+userRouter.get('/purchases', userMiddleware, async function(req, res) {
+    const userId =  req.userId;
+
+    const purchases = await userModel.find({
+        userId,
+    })
+
     res.json({
+        purchases: purchases,
 
     })
 })
