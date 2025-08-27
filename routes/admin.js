@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {JWT_ADMIN_PASSWORD} = require("../config");
 const {adminMiddleware} = require("../middleware/admin");
-const {courseMNodel} = require("../db")
+const {courseModel} = require("../db")
 
 adminRouter.post('/signup', async function(req, res) {
     const email = req.body.email;
@@ -67,10 +67,10 @@ adminRouter.post('/signin', async function(req, res) {
 })
 
 adminRouter.post('/course', adminMiddleware, async function(req, res) {
-    const adminId = req.adminId
+    const adminId = req.adminId;
    const {title, description, price, imageUrl} = req.body;
 
-  const course =  await courseMNodel.create({
+  const course =  await courseModel.create({
       title: title,
       description: description,
       price: price,
@@ -80,13 +80,22 @@ adminRouter.post('/course', adminMiddleware, async function(req, res) {
 
     
     res.json({
-        msg : "course create endpoint"
-        courseId = course._id,
+        msg : "course created",
+        courseId:  course._id,
     })
 
-adminRouter.put('/change', function(req, res) {
+adminRouter.put('/course', function(req, res) {
+    const {title} = req.body;
+    const {courseId} = req.body;
+    if(courseId) {
+        title: title
+    } else {
+        res.status(403).json({
+            msg: "id required",
+        })
+    }
         res.json({
-            msg: " change in course endpoint"
+            msg: "update course"
         })
     })
 })
