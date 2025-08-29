@@ -5,7 +5,7 @@ const {JWT_USER_PASSWORD} = require("../config");
 const bcrypt = require("bcrypt");
 const app = express();
 const userRouter  = Router();
-const {userModel} =  require("../db");
+const {userModel, purchaseModel, courseModel} =  require("../db");
 const { userMiddleware } = require("../middleware/user");
 app.use(express.json());
 
@@ -65,12 +65,16 @@ userRouter.post('/signin', async function(req, res) {
 userRouter.get('/purchases', userMiddleware, async function(req, res) {
     const userId =  req.userId;
 
-    const purchases = await userModel.find({
+    const purchases = await purchaseModel.find({
         userId,
     })
-
+    
+     const courseData = await courseModel.find({
+        _id : {$in: purchases.map(x => x.courseId)}
+     })
     res.json({
-        purchases: purchases,
+       purchases,
+       courseData
 
     })
 })
